@@ -60,21 +60,30 @@ jobs:
       - name: Run SpotBugs
         run: mvn spotbugs:check
 
-  sast:
-    runs-on: ubuntu-latest
-    needs: code-analysis
+sast:
+  runs-on: ubuntu-latest
+  needs: code-analysis
 
-    steps:
-      - uses: actions/checkout@v7
+  steps:
+    - uses: actions/checkout@v7
 
-      - name: Run Trivy SAST
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: fs
-          scan-ref: .
-          format: table
-          exit-code: '0'
-          severity: HIGH,CRITICAL
+    - uses: actions/setup-java@v5
+      with:
+        java-version: '17'
+        distribution: temurin
+        cache: maven
+
+    - name: Resolve dependencies
+      run: mvn dependency:resolve
+
+    - name: Run Trivy
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: fs
+        scan-ref: .
+        severity: HIGH,CRITICAL
+        format: table
+        exit-code: '0'
 
   docker:
     runs-on: ubuntu-latest
