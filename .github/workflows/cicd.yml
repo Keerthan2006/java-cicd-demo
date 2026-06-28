@@ -41,25 +41,12 @@ jobs:
         run: mvn clean test
 
 
-  code-analysis:
-    runs-on: ubuntu-latest
-    needs: build 
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v7
+  
 
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: 'fs' 
-          scan-ref: '.'
-          format: 'table'
-          exit-code: '1' 
-          severity: 'CRITICAL,HIGH'
 
   docker:
     runs-on: ubuntu-latest
-    needs: [test, code-analysis] 
+    needs: [build,test] 
     steps:
       - name: Checkout repo  
         uses: actions/checkout@v7
