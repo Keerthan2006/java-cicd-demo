@@ -107,7 +107,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/go-web-app:v1
+          tags: ${{ secrets.DOCKER_USERNAME }}/${{github.run_id}}
 
   dast:
     runs-on: ubuntu-latest
@@ -119,9 +119,9 @@ jobs:
       - name: Run Docker Container
         run: |
           docker run -d \
-          -p 8080:8080 \
+          -p 8080:9090 \
           --name spring-app \
-          ${{ secrets.DOCKER_USERNAME }}/go-web-app:v1
+          ${{ secrets.DOCKER_USERNAME }}/${{github.run_id}}
 
       - name: Wait for application
         run: sleep 30
